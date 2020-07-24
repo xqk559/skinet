@@ -9,14 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-  [Route("api/[controller]")]
-  public class ProductsController : ControllerBase
+  public class ProductsController : BaseApiContoller
   {
     private readonly IGenericRepository<ProductBrand> _productBrandRepo;
     private readonly IGenericRepository<ProductType> _productTypeRepo;
     private readonly IGenericRepository<Product> _productsRepo;
-
     private readonly IMapper _mapper;
     public ProductsController(IGenericRepository<Product> productsRepo,
     IGenericRepository<ProductBrand> productBrandRepo,
