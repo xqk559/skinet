@@ -14,5 +14,4 @@ export class PagingHeaderComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }
