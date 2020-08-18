@@ -25,6 +25,13 @@ namespace API
       services.AddControllers();
       services.AddDbContext<StoreContext>(x =>
           x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+
+      services.AddSingleton<ConnectionMultiplexer>(c => {
+        var Configuration = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"),
+        true);
+        return ConnectionMultiplexer.Connect(configuration);
+      });
+
       services.AddAutoMapper(typeof(MappingProfiles));
       services.AddApplicationServices();
       services.AddSwaggerDocumentation();
