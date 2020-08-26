@@ -7,7 +7,7 @@ namespace API.Controllers
 {
   public class BasketController : BaseApiContoller
   {
-      private readonly IBasketRepository _basketRepository;
+    private readonly IBasketRepository _basketRepository;
     public BasketController(IBasketRepository basketRepository)
     {
         _basketRepository = basketRepository;
