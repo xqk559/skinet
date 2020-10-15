@@ -9,9 +9,12 @@ import { ToastrModule } from 'ngx-toastr';
 import { SectionHeaderComponent } from './section-header/section-header.component';
 import { BreadcrumbModule } from 'xng-breadcrumb';
 import { SharedModule } from '../shared/shared.module';
+import { OrdersComponent } from './orders/orders.component';
+import { OrderDetailsComponent } from './orders/order-details/order-details.component';
 
 @NgModule({
-  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent, SectionHeaderComponent],
+  declarations: [NavBarComponent, TestErrorComponent, NotFoundComponent, ServerErrorComponent,
+    SectionHeaderComponent, OrdersComponent, OrderDetailsComponent],
   imports: [
     CommonModule,
     RouterModule,

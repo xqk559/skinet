@@ -57,7 +57,7 @@ namespace API.Controllers
 
       if (order == null) return NotFound(new ApiResponse(404));
 
-      return Ok(_mapper.Map<Order, OrderToReturnDto>(order));
+      return _mapper.Map<Order, OrderToReturnDto>(order);
     }
 
     [HttpGet("deliveryMethods")]

@@ -28,7 +28,7 @@ namespace Core.Entities.OrderAggregate
     public string PaymentIntentId { get; set; }
     public decimal GetTotal()
     {
-        return Subtotal + DeliveryMethod.Price;
+      return Subtotal + DeliveryMethod.Price;
     }
     }
 }
