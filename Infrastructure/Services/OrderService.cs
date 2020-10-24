@@ -10,11 +10,13 @@ namespace Infrastructure.Services
 {
   public class OrderService : IOrderService
   {
+    private readonly IPaymentService _paymentService;
 
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBasketRepository _basketRepo;
-    public OrderService(IUnitOfWork unitOfWork, IBasketRepository basketRepo)
+    public OrderService(IUnitOfWork unitOfWork, IBasketRepository basketRepo, IPaymentService paymentService)
     {
+      _paymentService = paymentService;
       _basketRepo = basketRepo;
       _unitOfWork = unitOfWork;
     }
@@ -41,17 +43,24 @@ namespace Infrastructure.Services
       // calculate subtotal
       var subtotal = items.Sum(items => items.Price * items.Quantity);
 
+      // check to see if order exists
+      var spec = new OrderByPaymentIntentIdWithItemsSpecification(basket.PaymentIntentId);
+      var exisitingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+      if (exisitingOrder != null)
+      {
+        _unitOfWork.Repository<Order>().Delete(exisitingOrder);
+        await _paymentService.CreateOrUpdatePaymentIntent(basket.PaymentIntentId);
+      }
+
       // create order
-      var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal);
+      var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
       _unitOfWork.Repository<Order>().Add(order);
 
       // save to db
       var result = await _unitOfWork.Complete();
 
-      if(result <= 0) return null;
-
-      // delete basket
-      await _basketRepo.DeleteBasketAsync(basketId);
+      if (result <= 0) return null;
 
       // return order
       return order;
