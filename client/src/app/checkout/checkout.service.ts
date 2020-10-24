@@ -16,7 +16,6 @@ export class CheckoutService {
 
   createOrder(order: IOrderToCreate): any {
     console.log(order);
-    console.log('PISS');
     return this.http.post(this.baseUrl + 'orders', order);
   }
 

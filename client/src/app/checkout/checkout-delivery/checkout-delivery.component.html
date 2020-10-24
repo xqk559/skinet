@@ -3,7 +3,7 @@
   <div class="row ml-5" formGroupName="deliveryForm">
     <div class="col-6 form-group" *ngFor="let method of deliveryMethods">
       <input type="radio" id="{{ method.id }}" value="{{ method.id }}" formControlName="deliveryMethod"
-        class="custom-control-input" (click)="setShippingPrice(method)" />
+        class="custom-control-input" (click)="setShippingPrice(method)" checked/>
       <label for="{{ method.id }}" class="custom-control-label">
         <strong>{{ method.shortName }} - {{ method.price | currency }}</strong>
         <br />
