@@ -13,12 +13,10 @@ export class OrdersService {
   constructor(private http: HttpClient) { }
 
   getOrders(): any {
-    console.log(this.http.get(this.baseUrl + 'orders'));
     return this.http.get(this.baseUrl + 'orders');
   }
 
   getOrderDetailed(id: number): any {
-    console.log(this.http.get(this.baseUrl + 'orders'));
     return this.http.get(this.baseUrl + 'orders/' + id);
   }
 

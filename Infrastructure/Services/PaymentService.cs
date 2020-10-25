@@ -1,11 +1,14 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
+using Core.Specifications;
 using Microsoft.Extensions.Configuration;
 using Stripe;
+using Order = Core.Entities.OrderAggregate.Order;
 using Product = Core.Entities.Product;
 
 namespace Infrastructure.Services
@@ -65,6 +68,7 @@ namespace Infrastructure.Services
         };
         intent = await service.CreateAsync(options);
         basket.PaymentIntentId = intent.Id;
+        Console.WriteLine(intent.Id);
         basket.ClientSecret = intent.ClientSecret;
     }
     else
@@ -81,5 +85,40 @@ namespace Infrastructure.Services
 
     return basket;
   }
-}
+
+    public async Task<Order> UpdateOrderPaymentFailed(string paymentIntentId)
+    {
+      var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
+      var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+      if (order == null) return null;
+
+      order.Status = OrderStatus.PaymentFailed;
+      await _unitOfWork.Complete();
+
+      return order;
+    }
+
+    public async Task<Order> UpdateOrderPaymentSucceeded(string paymentIntentId)
+    {
+      Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+
+      var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
+      var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+      if (order == null) return null;
+
+      order.Status = OrderStatus.PaymentReceived;
+
+      Console.WriteLine(order.Status + "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+
+      _unitOfWork.Repository<Order>().Update(order);
+
+      await _unitOfWork.Complete();
+
+      return order;
+    }
+  }
 }

@@ -26,6 +26,9 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
   cardErrors: any;
   cardHandler = this.onChange.bind(this);
   loading = false;
+  cardNumberValid = false;
+  cardExpiryValid = false;
+  cardCvcValid = false;
 
   constructor(private basketService: BasketService,
               private checkoutService: CheckoutService,
@@ -55,11 +58,22 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
     this.cardCvc.destroy();
   }
 
-  onChange({error}): any {
-    if (error) {
-      this.cardErrors = error.message;
+  onChange(event): any {
+    if (event.error) {
+      this.cardErrors = event.error.message;
     } else {
       this.cardErrors = null;
+    }
+    switch (event.elementType){
+      case 'cardNumber':
+        this.cardNumberValid = event.complete;
+        break;
+      case 'cardExpiry':
+        this.cardExpiryValid = event.complete;
+        break;
+      case 'cardCvc':
+        this.cardCvcValid = event.complete;
+        break;
     }
   }
 
@@ -71,7 +85,7 @@ export class CheckoutPaymentComponent implements AfterViewInit, OnDestroy {
       const paymentResult = await this.confirmPaymentWithStripe(basket);
 
       if (paymentResult.paymentIntent) {
-        this.basketService.deleteLocalBasket(basket.id);
+        this.basketService.deleteBasket(basket);
         const navigationExtras: NavigationExtras = {state: createdOrder};
         this.router.navigate(['checkout/success'], navigationExtras);
       } else {

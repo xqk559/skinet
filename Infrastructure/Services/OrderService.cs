@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,6 +29,7 @@ namespace Infrastructure.Services
 
       // get items from the product repo
       var items = new List<OrderItem>();
+
       foreach (var item in basket.Items)
       {
         var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
@@ -44,7 +46,7 @@ namespace Infrastructure.Services
       var subtotal = items.Sum(items => items.Price * items.Quantity);
 
       // check to see if order exists
-      var spec = new OrderByPaymentIntentIdWithItemsSpecification(basket.PaymentIntentId);
+      var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
       var exisitingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
       if (exisitingOrder != null)
@@ -55,6 +57,9 @@ namespace Infrastructure.Services
 
       // create order
       var order = new Order(items, buyerEmail, shippingAddress, deliveryMethod, subtotal, basket.PaymentIntentId);
+
+      Console.WriteLine(order.PaymentIntentId + "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+
       _unitOfWork.Repository<Order>().Add(order);
 
       // save to db

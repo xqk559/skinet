@@ -8,9 +8,9 @@ namespace Core.Entities.OrderAggregate
 
         public OrderItem(ProductItemOrdered itemOrdered, decimal price, int quantity)
         {
-        ItemOrdered = itemOrdered;
-        Price = price;
-        Quantity = quantity;
+            ItemOrdered = itemOrdered;
+            Price = price;
+            Quantity = quantity;
         }
 
         public ProductItemOrdered ItemOrdered { get; set; }
