@@ -61,8 +61,6 @@ export class ShopService {
     return this.http.get<IPagination>(this.baseUrl + 'products', {observe: 'response', params})
     .pipe(
        map(response => {
-         // this.products = response.body.data;
-         // return response.body;
          this.products = [...this.products, ...response.body.data];
          this.pagination = response.body;
          return this.pagination;
@@ -71,7 +69,6 @@ export class ShopService {
   }
 
   getShopParams(): any {
-    // console.log(this.shopParams);
     return this.shopParams;
   }
 
@@ -86,7 +83,6 @@ export class ShopService {
     if (product) {
       return of(product);
     }
-    // return this.http.get<IProduct>(this.baseUrl + 'products/' + id);
   }
 
   getBrands(): any {
